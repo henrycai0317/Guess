@@ -1,6 +1,7 @@
 package com.henry.guessnumber
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -39,6 +40,14 @@ class MaterialActivity : AppCompatActivity() {
         }
 
         counter.setText(secreteNumber.count.toString())
+
+        val count=getSharedPreferences("guess", MODE_PRIVATE)
+            .getInt("REC_COUNTER",-1)
+        val nick = getSharedPreferences("guess", MODE_PRIVATE)
+            .getString("REC_NICKNAME",null)
+        Log.d(TAG, "data :  $count / $nick ")
+
+
     }
 
     fun check(view : View){
@@ -58,7 +67,13 @@ class MaterialActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.meassge))
             .setMessage(meassge)
-            .setPositiveButton(getString(R.string.ok),null)
+            .setPositiveButton(getString(R.string.ok),{dialog,which ->
+                if(diff == 0 ){
+                    val intent = Intent(this,RecordActivity::class.java)
+                    intent.putExtra("COUNTER",secreteNumber.count)
+                    startActivity(intent)
+                }
+            })
             .show()
     }
 
