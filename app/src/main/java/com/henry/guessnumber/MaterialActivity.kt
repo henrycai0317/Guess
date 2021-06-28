@@ -17,26 +17,21 @@ class MaterialActivity : AppCompatActivity() {
 
     val secreteNumber = SecreteNumber()
     val TAG = MaterialActivity::class.java.simpleName
+    private  val REQUEST_RECORD = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+        Log.d(TAG, "onCreate: ")
         setContentView(R.layout.activity_material)
         setSupportActionBar(findViewById(R.id.toolbar))
 
         Log.d(TAG, "secrete : ${secreteNumber.secrete}")
 
         fab.setOnClickListener { view ->
-            AlertDialog.Builder(this)
-                .setTitle("Replay Game")
-                .setMessage("Are you sure ?")
-                .setPositiveButton(getString(R.string.ok), { dialog,which ->
-                    secreteNumber.reset()
-                    Log.d(TAG, "secrete : ${secreteNumber.secrete}")
-                    counter.setText(secreteNumber.count.toString())
-                    number.setText("")
-                })
-                .setNeutralButton("Cancel",null)
-                .show()
+            replay()
         }
 
         counter.setText(secreteNumber.count.toString())
@@ -48,6 +43,50 @@ class MaterialActivity : AppCompatActivity() {
         Log.d(TAG, "data :  $count / $nick ")
 
 
+    }
+
+    private fun replay() {
+        AlertDialog.Builder(this)
+                .setTitle("Replay Game")
+                .setMessage("Are you sure ?")
+                .setPositiveButton(getString(R.string.ok), { dialog, which ->
+                    secreteNumber.reset()
+                    Log.d(TAG, "secrete : ${secreteNumber.secrete}")
+                    counter.setText(secreteNumber.count.toString())
+                    number.setText("")
+                })
+                .setNeutralButton("Cancel", null)
+                .show()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: ")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: ")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: ")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(TAG, "onRestart: ")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
     }
 
     fun check(view : View){
@@ -71,10 +110,22 @@ class MaterialActivity : AppCompatActivity() {
                 if(diff == 0 ){
                     val intent = Intent(this,RecordActivity::class.java)
                     intent.putExtra("COUNTER",secreteNumber.count)
-                    startActivity(intent)
+                    startActivityForResult(intent,REQUEST_RECORD)
+//                    startActivity(intent)
+
                 }
             })
             .show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_RECORD){
+            if(resultCode == RESULT_OK){
+                val nickname=data?.getStringExtra("NICK")
+                Log.d(TAG, "onActivityResult: $nickname")
+                replay()
+            }
+        }
+    }
 }

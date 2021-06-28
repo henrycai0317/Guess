@@ -1,5 +1,6 @@
 package com.henry.guessnumber
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_record.*
@@ -18,6 +19,9 @@ class RecordActivity : AppCompatActivity() {
                 .putInt("REC_COUNTER",count)
                 .putString("REC_NICKNAME",nick)
                 .apply()
+            val intent = Intent().putExtra("NICK",nick)
+            setResult(RESULT_OK,intent)
+            finish()
         }
 
     }
